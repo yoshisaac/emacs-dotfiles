@@ -3,6 +3,15 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
+;; Disable Window Manager decorations
+(set-frame-parameter nil 'undecorated t)
+
+;; Automatically fit Emacs window to size of screen
+(toggle-frame-maximized)
+
+;; Start Emacs server, so that you can use Emacs to write commit messages and stuff
+(server-start)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -11,9 +20,15 @@
  '(custom-enabled-themes '(modus-vivendi))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(crystal-mode git-command git flycheck treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil lsp-treemacs treemacs lsp-ui transpose-frame auto-complete elcord go-mode hl-printf ligature lsp-mode lsp-python-ms lua-mode nodejs-repl php-mode rust-mode))
+   '(auto-complete crystal-mode elcord flycheck git git-command go-mode
+		   hl-printf json-mode ligature lsp-mode lsp-python-ms
+		   lsp-treemacs lsp-ui lua-mode nodejs-repl php-mode
+		   rust-mode transpose-frame treemacs treemacs-evil
+		   treemacs-icons-dired treemacs-magit treemacs-persp
+		   treemacs-projectile treemacs-tab-bar))
  '(package-vc-selected-packages
-   '((hl-printf :vc-backend Git :url "https://github.com/8dcc/hl-printf.el"))))
+   '((hl-printf :vc-backend Git :url
+		"https://github.com/8dcc/hl-printf.el"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -23,11 +38,13 @@
  '(scroll-bar ((t (:background "gray20" :foreground "gray44")))))
 
 ;; Refresh MELPA packages on start
+[ ; Disable automatic package refresh on startup
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (package-refresh-contents)
+]
 
 ;; Ligatures for firacode
 (use-package ligature
@@ -130,7 +147,7 @@
 ;(add-hook 'c-mode-hook 'hl-printf-mode)
 ;(add-hook 'c++-mode-hook 'hl-printf-mode)
 
-[
+[ ;; Disable treemacs begin
 ;; treemacs
 (use-package treemacs
   :ensure t
@@ -247,7 +264,7 @@
   :after (treemacs)
   :ensure t
   :config (treemacs-set-scope-type 'Tabs))
-]
+] ;; Disable treemacs end
 
 ;; lsp
 (use-package lsp-mode
@@ -257,5 +274,7 @@
   (setq lsp-enable-on-type-formatting nil)
   )
 
+;; lsp-mode hooks
 (add-hook 'c-mode-hook 'lsp)
 (add-hook 'c++-mode-hook 'lsp)
+(add-hook 'rust-mode-hook #'lsp)
